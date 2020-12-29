@@ -1,0 +1,9 @@
+C:\Users\omara\source\repos\ezThread\ezThread\obj\Debug\netstandard2.0\ezThread.csprojAssemblyReference.cache
+C:\Users\omara\source\repos\ezThread\ezThread\obj\Debug\netstandard2.0\ezThread.AssemblyInfoInputs.cache
+C:\Users\omara\source\repos\ezThread\ezThread\obj\Debug\netstandard2.0\ezThread.AssemblyInfo.cs
+C:\Users\omara\source\repos\ezThread\ezThread\obj\Debug\netstandard2.0\ezThread.csproj.CoreCompileInputs.cache
+C:\Users\omara\source\repos\ezThread\ezThread\bin\Debug\netstandard2.0\ezThread.deps.json
+C:\Users\omara\source\repos\ezThread\ezThread\bin\Debug\netstandard2.0\ezThread.dll
+C:\Users\omara\source\repos\ezThread\ezThread\bin\Debug\netstandard2.0\ezThread.pdb
+C:\Users\omara\source\repos\ezThread\ezThread\obj\Debug\netstandard2.0\ezThread.dll
+C:\Users\omara\source\repos\ezThread\ezThread\obj\Debug\netstandard2.0\ezThread.pdb
