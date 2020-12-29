@@ -7,38 +7,103 @@ namespace ezThread
     public class JobManager
     {
         private List<EZTHREAD> ezthreads = new List<EZTHREAD>();
-        List<Job> jobs = new List<Job>();
-        private int threads = 0;
+        private List<Job> jobs = new List<Job>();
+        public int threads;
         private CancellationTokenSource cts = new CancellationTokenSource();
-        public JobManager(int threadstouse)
+
+        public JobManager(List<Job> Jobs, int threadstouse)
         {
+            jobs = Jobs;
             threads = threadstouse;
+        }
+        /// <summary>Creates the threads and allocates jobs to them. Use this if you add or remove a job</summary>
+        public void setThreads()
+        {
+            ezthreads.Clear();
+            int jobsperthread = jobs.Count/threads;
+            int jindex = 0;
             for (int i = 0; i < threads; i++)
             {
-                
+                List<Job> jobsT = new List<Job>();
+                if (i >= threads-1)
+                {
+                    for (int j = jindex; j < jobs.Count; j++)
+                    {
+                        jobsT.Add(jobs[j]);
+                    }
+                }
+                else
+                {
+                    for (int j = 0; j < jobsperthread; j++)
+                    {
+                        jobsT.Add(jobs[jindex]);
+                        ++jindex;
+                    }
+                }
+                addThread(jobsT);
             }
         }
-
+        /// <summary><say>Starts the threads, Make sure to set threads before</say></summary>
         public void startThreads()
         {
-
+            foreach (var thread in ezthreads)
+            {
+                thread.executeJobs();
+            }
         }
-
+        /// <summary>Kills all the threads</summary>
         public void killThreads()
         {
-            
+            cts.Cancel();
         }
 
+        public void removeJob(Job j)
+        {
+            jobs.Remove(j);
+        }
+        public void addJob(Job j)
+        {
+            jobs.Add(j);
+        }
+
+        public void killThread(int id)
+        {
+            ezthreads[id].killThread();
+        }
+        public bool isDone()
+        {
+            int doneindex = 0;
+            foreach (var ezthread in ezthreads)
+            {
+                if (ezthread.t.IsAlive)
+                {
+                    
+                }
+                else
+                {
+                    ++doneindex;
+                }
+            }
+
+            if (doneindex >= threads)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
         private void addThread(List<Job> lj)
         {
-            EZTHREAD ezt = new EZTHREAD(lj, cts.Token, ezthreads.Count-1);
+            EZTHREAD ezt = new EZTHREAD(lj, cts.Token, ezthreads.Count);
             ezthreads.Add(ezt);
         } 
     }
 
     class EZTHREAD
     {
-        private Thread t;
+        public Thread t;
         public readonly int ID;
         public CancellationToken ctx;
         private CancellationTokenSource cts = new CancellationTokenSource();
@@ -57,14 +122,13 @@ namespace ezThread
                 {
                     if (ctx.IsCancellationRequested || indvctx.IsCancellationRequested)
                     {
-                        return;
+                        break;
                     }
                     j.execute();
                 }
             });
             
             t = new Thread(ts);
-            t.IsBackground = true;
             indvctx = cts.Token;
         }
 
