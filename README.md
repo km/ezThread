@@ -7,56 +7,56 @@ Job is a class that contains your functions and can execute and cancel async.
 Jobs are required for the JobManager class.
 ### Example
 
-    
+   
+```csharp
+   Job j = new Job(() =>
+        {
+            Console.WriteLine("Job1");
+        });
 
-       Job j = new Job(() =>
-            {
-                Console.WriteLine("Job1");
-            });
+//runs the job optional parameter of how many times to execute
+j.execute();
 
-            //runs the job optional parameter of how many times to execute
-            j.execute();
+//runs the job async optional parameter of how many times to execute
+j.executeAsync();
 
-            //runs the job async optional parameter of how many times to execute
-            j.executeAsync();
-
-            //cancels the execution of the job if its running async
-            j.cancelExecution();
-
+//cancels the execution of the job if its running async
+j.cancelExecution();
+```
 ## JobManager
 
 JobManager is a class you can provide a list of jobs too and the amount of threads you want to execute the jobs with.
 ### Example
 
-      List<Job> joblist = new List<Job>();
-            //Creating a 100 jobs to execute
-            for (int i = 0; i < 100; i++)
+ 
+```csharp
+ List<Job> joblist = new List<Job>();
+        //Creating a 100 jobs to execute
+        for (int i = 0; i < 100; i++)
+        {
+            int e = i;
+            Job j = new Job(() =>
             {
-                int e = i;
-                Job j = new Job(() =>
-                {
-                    Console.WriteLine("Job"+e);
-                });
-                joblist.Add(j);
-            }
+                Console.WriteLine("Job"+e);
+            });
+            joblist.Add(j);
+        }
 
-            //Creates a jobmanager class with our list and 10 threads to execute them with
-            JobManager jobManager = new JobManager(joblist, 10);
+//Creates a jobmanager class with our list and 10 threads to execute them with
+JobManager jobManager = new JobManager(joblist, 10);
 
-            //Call this function everytime you create a jobmanager class and everytime you remove or add a job using addJob() or removeJob()
-            jobManager.setThreads();
+//Call this function everytime you create a jobmanager class and everytime you remove or add a job using addJob() or removeJob()
+jobManager.setThreads();
 
-            //Starts the execution of the jobs
-            jobManager.startThreads();
+//Starts the execution of the jobs
+jobManager.startThreads();
 
-            //Returns true if all threads are done
-            jobManager.isDone();
+//Returns true if all threads are done
+bool done = jobManager.isDone();
 
-            //Stops the threads from proceeding to the next queued job and terminates them
-            jobManager.killThreads();
-
-
-
+//Stops the threads from proceeding to the next queued job and terminates them
+jobManager.killThreads();
+```
 ## Notes:
 
  - Do not use more threads than the amount of jobs.
