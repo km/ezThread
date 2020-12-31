@@ -21,6 +21,10 @@ namespace ezThread
         {
             for (int i = 0; i < times; i++)
             {
+                if (CT.IsCancellationRequested)
+                {
+                    break;
+                }
                 A();
             }
         }
@@ -32,10 +36,16 @@ namespace ezThread
                 await Task.Run(A, CT);
             }
         }
-        //Cancels the cancellation token then the async task will stop
+        //Cancels the cancellation token then the async task will stop or when the next time a job is ran.
         public void cancelExecution()
         {
             source.Cancel();
+        }
+        //Must call this after cancelling a job in order to rerun it later
+        public void resetCancellation()
+        {
+            source = new CancellationTokenSource();
+            CT = source.Token;
         }
     }
 }

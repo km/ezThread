@@ -16,7 +16,7 @@ namespace ezThread
             jobs = Jobs;
             threads = threadstouse;
         }
-        /// <summary>Creates the threads and allocates jobs to them. Use this if you add or remove a job</summary>
+        //Creates the threads and allocates jobs to them. Use this if you add or remove a job
         public void setThreads()
         {
             ezthreads.Clear();
@@ -43,7 +43,7 @@ namespace ezThread
                 addThread(jobsT);
             }
         }
-        /// <summary><say>Starts the threads, Make sure to set threads before</say></summary>
+        //Starts the threads, Make sure to set threads before
         public void startThreads()
         {
             foreach (var thread in ezthreads)
@@ -51,25 +51,27 @@ namespace ezThread
                 thread.executeJobs();
             }
         }
-        /// <summary>Kills all the threads</summary>
+        //Kills all the threads
         public void killThreads()
         {
             cts.Cancel();
         }
-
+        //Removes job to list
         public void removeJob(Job j)
         {
             jobs.Remove(j);
         }
+        //Adds job to list
         public void addJob(Job j)
         {
             jobs.Add(j);
         }
-
+        //Kills specific thread (Thread IDs start at 0 and ends at threadAmount-1)
         public void killThread(int id)
         {
             ezthreads[id].killThread();
         }
+        //Returns true if done false if not
         public bool isDone()
         {
             int doneindex = 0;
@@ -94,6 +96,7 @@ namespace ezThread
                 return false;
             }
         }
+        //Adds thread to thread list
         private void addThread(List<Job> lj)
         {
             EZTHREAD ezt = new EZTHREAD(lj, cts.Token, ezthreads.Count);
@@ -101,6 +104,7 @@ namespace ezThread
         } 
     }
 
+    //Class might be used as a public class in the future
     class EZTHREAD
     {
         public Thread t;

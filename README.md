@@ -22,6 +22,9 @@ j.executeAsync();
 
 //cancels the execution of the job if its running async
 j.cancelExecution();
+
+//Run this to be able to rerun a job after cancelling it
+j.resetCancellation();
 ```
 ## JobManager
 
