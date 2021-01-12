@@ -49,13 +49,19 @@ JobManager is a class you can provide a list of jobs too and the amount of threa
 JobManager jobManager = new JobManager(joblist, 10);
 
 //Call this function everytime you create a jobmanager class and everytime you remove or add a job using addJob() or removeJob()
-jobManager.setThreads();
+jobManager.build();
 
 //Starts the execution of the jobs
 jobManager.startThreads();
 
 //Returns true if all threads are done
 bool done = jobManager.isDone();
+
+//Pause threads
+jobManager.pause();
+
+//Resume threads
+jobManager.resume();
 
 //Stops the threads from proceeding to the next queued job and terminates them
 jobManager.killThreads();

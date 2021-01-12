@@ -11,6 +11,14 @@ namespace ezThread
         public Action A;
         private CancellationToken CT;
         private CancellationTokenSource source = new CancellationTokenSource();
+        //times to be executed by an EZTHREAD class instance
+        public int executions = 1;
+        public Job(Action a, int exec)
+        {
+            A = a;
+            CT = source.Token;
+            executions = exec;
+        }
         public Job(Action a)
         {
             A = a;

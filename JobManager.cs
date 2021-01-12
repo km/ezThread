@@ -16,8 +16,14 @@ namespace ezThread
             jobs = Jobs;
             threads = threadstouse;
         }
+        //Requires the cancellation token source of the token you gave to your threads
+        public JobManager(List<EZTHREAD> threads, CancellationTokenSource threadancellationTokenSource)
+        {
+            ezthreads = threads;
+            cts = threadancellationTokenSource;
+        }
         //Creates the threads and allocates jobs to them. Use this if you add or remove a job
-        public void setThreads()
+        public void build()
         {
             ezthreads.Clear();
             int jobsperthread = jobs.Count/threads;
@@ -43,7 +49,7 @@ namespace ezThread
                 addThread(jobsT);
             }
         }
-        //Starts the threads, Make sure to set threads before
+        //Starts the threads, Make sure to build() before
         public void startThreads()
         {
             foreach (var thread in ezthreads)
@@ -51,11 +57,41 @@ namespace ezThread
                 thread.executeJobs();
             }
         }
+        //Pauses all threads
+        public void pause()
+        {
+            foreach (var ezthread in ezthreads)
+            {
+                ezthread.pause();
+            }
+        }
+        //Resumes all threads
+        public void resume()
+        {
+            foreach (var ezthread in ezthreads)
+            {
+                ezthread.resume();
+            }
+        }
+        //Returns true if all threads are paused
+        public bool isPaused()
+        {
+            foreach (var ezthread in ezthreads)
+            {
+                if (!ezthread.isPaused())
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
         //Kills all the threads
         public void killThreads()
         {
             cts.Cancel();
         }
+        
         //Removes job to list
         public void removeJob(Job j)
         {
@@ -71,30 +107,18 @@ namespace ezThread
         {
             ezthreads[id].killThread();
         }
-        //Returns true if done false if not
+        //Returns true if all threads are done/off
         public bool isDone()
         {
-            int doneindex = 0;
             foreach (var ezthread in ezthreads)
             {
                 if (ezthread.t.IsAlive)
                 {
-                    
-                }
-                else
-                {
-                    ++doneindex;
+                    return false;
                 }
             }
 
-            if (doneindex >= threads)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+            return true;
         }
         //Adds thread to thread list
         private void addThread(List<Job> lj)
@@ -104,17 +128,16 @@ namespace ezThread
         } 
     }
 
-    //Class might be used as a public class in the future
-    class EZTHREAD
+    public class EZTHREAD
     {
         public Thread t;
         public readonly int ID;
-        public CancellationToken ctx;
+        private CancellationToken ctx;
         private CancellationTokenSource cts = new CancellationTokenSource();
         private CancellationToken indvctx;
         private List<Job> jobs;
         public int killthreadafter = 0;
-        
+        private bool paused = false;
         public EZTHREAD(List<Job> lj, CancellationToken ct, int id)
         {
             jobs = lj;
@@ -124,11 +147,26 @@ namespace ezThread
             {
                 foreach (Job j in jobs)
                 {
-                    if (ctx.IsCancellationRequested || indvctx.IsCancellationRequested)
+                    for (int i = 0; i < j.executions; i++)
                     {
-                        break;
+
+                        if (paused)
+                        {
+                            try
+                            {
+                                Thread.Sleep(Timeout.Infinite);
+                            }
+                            catch
+                            {
+                            }
+                        }
+                        else if (ctx.IsCancellationRequested || indvctx.IsCancellationRequested)
+                        {
+                            break;
+                        }
+
+                        j.execute();
                     }
-                    j.execute();
                 }
             });
             
@@ -144,7 +182,19 @@ namespace ezThread
                 cts.CancelAfter(killthreadafter);
             }
         }
-
+        public void pause()
+        {
+            paused = true;
+        }
+        public void resume()
+        {
+            paused = false;
+            t.Interrupt();
+        }
+        public bool isPaused()
+        {
+            return paused;
+        }
         public void killThread()
         {
             cts.Cancel();
