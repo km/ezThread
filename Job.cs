@@ -48,12 +48,9 @@ namespace ezThread
         public void cancelExecution()
         {
             source.Cancel();
-        }
-        //Must call this after cancelling a job in order to rerun it later
-        public void resetCancellation()
-        {
             source = new CancellationTokenSource();
             CT = source.Token;
         }
+    
     }
 }
