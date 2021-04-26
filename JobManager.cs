@@ -198,11 +198,6 @@ namespace ezThread
         {
             jobs = lj;
             ID = id;
-        }
-
-        public void start()
-        {
-            killthread = false;
             ThreadStart ts = new ThreadStart(() =>
             {
                 while (true)
@@ -224,6 +219,50 @@ namespace ezThread
                     else if (jobs.Count != 0)
                     {
                         var j = jobs.Dequeue();
+                        if (j != null)
+                        {
+                            j.execute();
+                        }
+                    }
+                    else
+                    {
+                        break;
+                    }
+
+                }
+
+            });
+            t = new Thread(ts);
+        }
+
+        public void start()
+        {
+            killthread = false;
+            ThreadStart ts = new ThreadStart(() =>
+            {
+                Job j = new Job(() => { });
+                while (true)
+                {
+                    if (paused)
+                    {
+                        try
+                        {
+                            Thread.Sleep(Timeout.Infinite);
+                        }
+                        catch
+                        {
+                        }
+                    }
+                    else if (killthread)
+                    {
+                        break;
+                    }
+                    else if (jobs.Count != 0)
+                    {
+                        lock (jobs)
+                        { 
+                            j = jobs.Dequeue();
+                        }
                         if (j != null)
                         {
                             j.execute();
