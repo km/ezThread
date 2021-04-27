@@ -12,7 +12,6 @@ namespace ezThread
         private Queue<Job> qjob = new Queue<Job>();
         private bool started = false;
 
-
         public JobManager(List<Job> Jobs, int threadstouse)
         {
             qjob = new Queue<Job>(Jobs);
@@ -168,7 +167,6 @@ namespace ezThread
         public void decreaseThreads(double percentage)
         {
             int amount = Convert.ToInt32(ezthreads.Count * (percentage / 100));
-            Console.WriteLine(amount);
             if (amount < ezthreads.Count)
             {
                 for (int i = 0; i < amount; ++i)
