@@ -13,6 +13,7 @@ namespace ezThread
         private CancellationTokenSource source = new CancellationTokenSource();
         //times to be executed by an EZTHREAD class instance
         public int executions = 1;
+
         public Job(Action a, int exec)
         {
             A = a;
@@ -48,12 +49,9 @@ namespace ezThread
         public void cancelExecution()
         {
             source.Cancel();
-        }
-        //Must call this after cancelling a job in order to rerun it later
-        public void resetCancellation()
-        {
             source = new CancellationTokenSource();
             CT = source.Token;
         }
+    
     }
 }
