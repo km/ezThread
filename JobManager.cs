@@ -9,7 +9,7 @@ namespace ezThread
     public class JobManager
     {
         private List<EZTHREAD> ezthreads = new List<EZTHREAD>();
-        Queue<Job> qjob = new Queue<Job>();
+        private Queue<Job> qjob = new Queue<Job>();
         private bool started = false;
 
 
@@ -245,6 +245,7 @@ namespace ezThread
         public void start()
         {
             killthread = false;
+            paused = false;
             ThreadStart ts = new ThreadStart(() =>
             {
                 Job j = new Job(() => { });
