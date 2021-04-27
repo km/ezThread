@@ -130,21 +130,24 @@ namespace ezThread
             return true;
         }
         //Adds thread to thread list and starts them if the manager is running
-        public void addThread()
+        public void addThread(int Amount = 1)
         {
-            EZTHREAD ezt = new EZTHREAD(qjob, ezthreads.Count);
-            ezthreads.Add(ezt);
-            if (started)
+            for (int i = 0; i < Amount; i++)
             {
-                ezt.start();
+                EZTHREAD ezt = new EZTHREAD(qjob, ezthreads.Count);
+                ezthreads.Add(ezt);
+                if (started)
+                {
+                    ezt.start();
+                }
             }
         }
-        //Deletes specified amount of threads (Use it when the manager isn't running)
+        //Deletes specified amount of threads (Preferably use it when the manager isn't running)
         public void decreaseThreads(int amount)
         {
-            if (amount <= ezthreads.Count)
+            if (amount < ezthreads.Count)
             {
-                for (int i = 0; i <= amount; i++)
+                for (int i = 0; i < amount; i++)
                 {
                     ezthreads.Last().killThread();
                     ezthreads.Remove(ezthreads.Last());
@@ -154,18 +157,21 @@ namespace ezThread
             {
                 foreach (EZTHREAD ezt in ezthreads)
                 {
-                    ezthreads.Last().killThread();
+                    ezt.killThread();
                 }
                 ezthreads.Clear();
+                started = false;
             }
-          
+
         }
+        //Deletes specified percentage of threads (Preferably use it when the manager isn't running)
         public void decreaseThreads(double percentage)
         {
             int amount = Convert.ToInt32(ezthreads.Count * (percentage / 100));
-            if (amount <= ezthreads.Count)
+            Console.WriteLine(amount);
+            if (amount < ezthreads.Count)
             {
-                for (int i = 0; i <= amount; i++)
+                for (int i = 0; i < amount; ++i)
                 {
                     ezthreads.Last().killThread();
                     ezthreads.Remove(ezthreads.Last());
@@ -175,12 +181,13 @@ namespace ezThread
             {
                 foreach (EZTHREAD ezt in ezthreads)
                 {
-                    ezthreads.Last().killThread();
+                    ezt.killThread();
                 }
                 ezthreads.Clear();
+                started = false;
             }
         }
-
+        //Returns the amount of threads in the manager
         public int threadAmount()
         {
             return ezthreads.Count;
